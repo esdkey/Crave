@@ -44,6 +44,9 @@ dev.db*
 # local logs
 *.log
 
+# user-uploaded content (product images / payment screenshots)
+/public/uploads/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -82,7 +82,6 @@ async function main() {
           stock: p.stock,
           featured: p.featured,
           isAvailable: true,
-          imageUrl: null,
         },
       });
       console.log(`✓ Product created: ${p.slug}`);

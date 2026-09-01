@@ -42,8 +42,8 @@ model User {
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  slug          String   @unique
+  id            String         @id @default(cuid())
+  slug          String         @unique
   nameAr        String
   nameEn        String
   descriptionAr String
@@ -51,26 +51,39 @@ model Product {
   storyAr       String? // optional fragrance story
   storyEn       String? // optional fragrance story
   price         Float
-  imageUrl      String? // path to product image in /public
-  isAvailable   Boolean  @default(true) // shown to customer
-  stock         Int      @default(0) // hidden from customer
-  featured      Boolean  @default(false) // show on home page
+  salePrice     Float? // discounted price (shown with old price struck through)
+  isAvailable   Boolean        @default(true) // shown to customer
+  stock         Int            @default(0) // hidden from customer
+  featured      Boolean        @default(false) // show on home page
+  images        ProductImage[]
   orders        Order[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  url       String // path to image under /public/uploads
+  position  Int      @default(0) // ordering; first (lowest) is the primary/cover
+  createdAt DateTime @default(now())
+
+  @@index([productId])
 }
 
 model Order {
-  id            String        @id @default(cuid())
-  product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId     String
-  customerName  String
-  phone         String
-  address       String
-  paymentMethod PaymentMethod @default(COD)
-  status        OrderStatus   @default(PROCESSING)
-  notes         String? // optional note
-  createdAt     DateTime      @default(now())
+  id                String        @id @default(cuid())
+  product           Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId         String
+  customerName      String
+  phone             String
+  address           String
+  paymentMethod     PaymentMethod @default(COD)
+  paymentScreenshot String? // uploaded proof-of-payment image (path under /public/uploads)
+  status            OrderStatus   @default(PROCESSING)
+  notes             String? // optional note
+  createdAt         DateTime      @default(now())
 
   @@index([productId])
   @@index([createdAt])
@@ -81,4 +94,11 @@ model Notification {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+// Key/value site settings (editable from the dashboard), e.g. payment numbers.
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendOrderNotification } from "@/lib/telegram";
+import { saveUploadedImage, getFiles } from "@/lib/upload";
 
 const orderSchema = z.object({
   productId: z.string().min(1),
@@ -55,6 +56,15 @@ export async function submitOrder(
       return { message: "orderForm.error" };
     }
 
+    // Optional payment screenshot (e-wallet / InstaPay). Rewind avoided:
+    // getFiles reads the (single) file field.
+    let screenshotUrl: string | null = null;
+    const screenshotFiles = getFiles(formData, "screenshot");
+    if (screenshotFiles.length > 0) {
+      const saved = await saveUploadedImage(screenshotFiles[0], "orders");
+      if (saved) screenshotUrl = saved;
+    }
+
     const order = await prisma.order.create({
       data: {
         productId,
@@ -63,6 +73,7 @@ export async function submitOrder(
         address,
         paymentMethod,
         notes: notes || undefined,
+        paymentScreenshot: screenshotUrl,
       },
     });
 
@@ -72,12 +83,17 @@ export async function submitOrder(
       },
     });
 
+    const effectivePrice =
+      product.salePrice != null && product.salePrice < product.price
+        ? product.salePrice
+        : product.price;
+
     await sendOrderNotification({
       orderId: order.id.slice(0, 8),
       customerName,
       phone,
       productName: `${product.nameAr} / ${product.nameEn}`,
-      price: product.price,
+      price: effectivePrice,
       paymentMethod,
       address,
     });

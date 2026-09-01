@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/app/[lang]/dictionaries";
-import type { Product } from "@/generated/prisma/client";
+
+type CardProduct = {
+  slug: string;
+  name: string;
+  isAvailable: boolean;
+  price: number;
+  salePrice: number | null;
+  primaryImage: string | null;
+};
 
 type CardDict = {
   inStock: string;
@@ -14,7 +22,7 @@ export function ProductCard({
   lang,
   dict,
 }: {
-  product: Product & { name: string; description: string; story: string };
+  product: CardProduct;
   lang: Locale;
   dict: CardDict;
 }) {
@@ -24,9 +32,9 @@ export function ProductCard({
       className="group flex flex-col overflow-hidden rounded-lg border border-burgundy/10 bg-white shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-square overflow-hidden bg-cream">
-        {product.imageUrl ? (
+        {product.primaryImage ? (
           <Image
-            src={product.imageUrl}
+            src={product.primaryImage}
             alt={product.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -51,9 +59,19 @@ export function ProductCard({
       </div>
       <div className="flex flex-col gap-1 p-4">
         <h3 className="font-serif text-lg text-ink">{product.name}</h3>
-        <p className="text-sm text-burgundy">
-          {product.price} {dict.currency}
-        </p>
+        <div className="flex items-baseline gap-2">
+          {product.salePrice != null && product.salePrice < product.price && (
+            <span className="text-sm text-ink/40 line-through">
+              {product.price} {dict.currency}
+            </span>
+          )}
+          <p className="text-sm font-semibold text-burgundy">
+            {product.salePrice != null && product.salePrice < product.price
+              ? product.salePrice
+              : product.price}{" "}
+            {dict.currency}
+          </p>
+        </div>
       </div>
     </Link>
   );

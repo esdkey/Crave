@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { submitOrder, type OrderFormState } from "@/lib/actions/order";
 
 type OrderDict = {
@@ -11,6 +11,11 @@ type OrderDict = {
   paymentCod: string;
   paymentVodafone: string;
   paymentInstapay: string;
+  transferInfo: string;
+  transferMethod: string;
+  transferMethodValue: string;
+  screenshot: string;
+  screenshotOptional: string;
   notes: string;
   submit: string;
   success: string;
@@ -22,20 +27,31 @@ type OrderDict = {
 export function OrderForm({
   productId,
   dict,
+  payment,
 }: {
   productId: string;
   dict: OrderDict;
+  payment: { vodafone: string | null; instapay: string | null };
 }) {
-  const initialState: OrderFormState = undefined;
   const [state, formAction, pending] = useActionState(
     submitOrder,
-    initialState,
+    undefined as OrderFormState,
   );
+  const [method, setMethod] = useState("COD");
+
+  const showVodafone = method === "VODAFONE_CASH" && !!payment.vodafone;
+  const showInstapay = method === "INSTAPAY" && !!payment.instapay;
+  const showTransfer = showVodafone || showInstapay;
+
+  const transferLabel =
+    method === "VODAFONE_CASH" ? dict.paymentVodafone : dict.paymentInstapay;
+  const transferValue =
+    method === "VODAFONE_CASH" ? payment.vodafone : payment.instapay;
 
   if (state?.success) {
     return (
       <div className="rounded-lg border border-burgundy/20 bg-burgundy/5 p-6 text-center">
-        <p className="text-lg font-medium text-burgundy">✓</p>
+        <p className="text-2xl text-burgundy">✓</p>
         <p className="mt-2 text-ink">{dict.success}</p>
       </div>
     );
@@ -46,7 +62,9 @@ export function OrderForm({
       <input type="hidden" name="productId" value={productId} />
 
       {state?.message && (
-        <p className="text-sm text-burgundy">{dict.error}</p>
+        <p className="rounded-md bg-burgundy/10 px-3 py-2 text-sm text-burgundy">
+          {dict.error}
+        </p>
       )}
 
       <Field
@@ -76,18 +94,54 @@ export function OrderForm({
         <select
           id="paymentMethod"
           name="paymentMethod"
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
           className="w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-ink focus:border-burgundy focus:outline-none"
         >
           <option value="COD">{dict.paymentCod}</option>
-          <option value="VODAFONE_CASH">{dict.paymentVodafone}</option>
-          <option value="INSTAPAY">{dict.paymentInstapay}</option>
+          {payment.vodafone && (
+            <option value="VODAFONE_CASH">{dict.paymentVodafone}</option>
+          )}
+          {payment.instapay && (
+            <option value="INSTAPAY">{dict.paymentInstapay}</option>
+          )}
         </select>
         {state?.errors?.paymentMethod && (
-          <p className="mt-1 text-sm text-burgundy">
-            {dict.requiredFields}
-          </p>
+          <p className="mt-1 text-sm text-burgundy">{dict.requiredFields}</p>
         )}
       </div>
+
+      {showTransfer && (
+        <div className="rounded-lg border border-burgundy/20 bg-cream px-4 py-3">
+          <p className="text-xs text-ink/70">{dict.transferInfo}</p>
+          <p className="mt-1 text-sm text-ink">
+            {dict.transferMethod} <span className="font-semibold text-burgundy">{transferLabel}</span>
+          </p>
+          <p className="mt-0.5 font-mono text-lg font-bold tracking-wide text-ink">
+            {transferValue}
+          </p>
+          <p className="mt-1 text-xs text-ink/70">{dict.transferMethodValue}</p>
+        </div>
+      )}
+
+      {showTransfer && (
+        <div>
+          <label
+            htmlFor="screenshot"
+            className="mb-1 block text-sm font-medium text-ink"
+          >
+            {dict.screenshot}
+          </label>
+          <input
+            id="screenshot"
+            name="screenshot"
+            type="file"
+            accept="image/*"
+            className="w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm text-ink file:mr-3 file:rounded file:border-0 file:bg-burgundy file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-cream"
+          />
+          <p className="mt-1 text-xs text-ink/60">{dict.screenshotOptional}</p>
+        </div>
+      )}
 
       <div>
         <label

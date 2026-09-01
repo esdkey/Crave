@@ -16,7 +16,10 @@ export default async function EditProductPage({
   const dict = await getDictionary();
   const d = dict.dashboard;
 
-  const product = await prisma.product.findUnique({ where: { id } });
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: { images: { orderBy: { position: "asc" } } },
+  });
   if (!product) notFound();
 
   return (
@@ -51,14 +54,15 @@ export default async function EditProductPage({
           nameEn: product.nameEn,
           slug: product.slug,
           price: product.price,
+          salePrice: product.salePrice,
           stock: product.stock,
           isAvailable: product.isAvailable,
           featured: product.featured,
-          imageUrl: product.imageUrl,
           descriptionAr: product.descriptionAr,
           descriptionEn: product.descriptionEn,
           storyAr: product.storyAr,
           storyEn: product.storyEn,
+          images: product.images.map((i) => ({ id: i.id, url: i.url })),
         }}
       />
     </div>

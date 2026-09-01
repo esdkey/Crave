@@ -1,8 +1,9 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ProductGallery } from "@/components/site/ProductGallery";
 import { OrderForm } from "@/components/site/OrderForm";
+import { getPaymentConfig } from "@/lib/payment";
 import { getDictionary, hasLocale, type Locale } from "../../dictionaries";
 import {
   getProductBySlug,
@@ -18,11 +19,15 @@ export default async function ProductDetailPage({
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary();
+  const payment = await getPaymentConfig();
 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
   const productLocalized = localizedProduct(product, lang as Locale);
+  const gallery = productLocalized.images
+    .map((i) => i.url)
+    .filter((u): u is string => !!u);
   const others = (await getOtherProducts(product.id)).map((p) =>
     localizedProduct(p, lang as Locale),
   );
@@ -31,24 +36,8 @@ export default async function ProductDetailPage({
     <div className="py-12 md:py-20">
       <Container>
         <div className="grid gap-10 lg:grid-cols-2">
-          {/* Image */}
-          <div className="relative aspect-square overflow-hidden rounded-lg border border-burgundy/10 bg-cream">
-            {product.imageUrl ? (
-              <Image
-                src={product.imageUrl}
-                alt={productLocalized.name}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center">
-                <span className="font-serif text-4xl tracking-[0.3em] text-burgundy/40">
-                  CRAVE
-                </span>
-              </div>
-            )}
-          </div>
+          {/* Gallery */}
+          <ProductGallery images={gallery} name={productLocalized.name} />
 
           {/* Details */}
           <div>
@@ -68,9 +57,21 @@ export default async function ProductDetailPage({
               {productLocalized.name}
             </h1>
 
-            <p className="mt-2 text-xl text-burgundy">
-              {dict.common.price}: {product.price} {dict.common.currency}
-            </p>
+            <div className="mt-2 flex items-baseline gap-3">
+              {productLocalized.salePrice != null &&
+                productLocalized.salePrice < productLocalized.price && (
+                  <span className="text-lg text-ink/40 line-through">
+                    {productLocalized.price} {dict.common.currency}
+                  </span>
+                )}
+              <p className="font-serif text-3xl text-burgundy">
+                {productLocalized.salePrice != null &&
+                productLocalized.salePrice < productLocalized.price
+                  ? productLocalized.salePrice
+                  : productLocalized.price}{" "}
+                {dict.common.currency}
+              </p>
+            </div>
 
             <div className="mt-6">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-ink/60">
@@ -94,7 +95,14 @@ export default async function ProductDetailPage({
                 <h2 className="mb-4 font-serif text-2xl text-ink">
                   {dict.product.orderTitle}
                 </h2>
-                <OrderForm productId={product.id} dict={dict.orderForm} />
+                <OrderForm
+                  productId={product.id}
+                  dict={dict.orderForm}
+                  payment={{
+                    vodafone: payment.vodafoneNumber || null,
+                    instapay: payment.instapayNumber || null,
+                  }}
+                />
               </div>
             )}
           </div>

@@ -2,35 +2,20 @@ import "server-only";
 import { getIronSession, type IronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { Role } from "@/generated/prisma/client";
+import { sessionOptions, type SessionData } from "@/lib/session-config";
 
-export type SessionData = {
-  userId?: string;
-  name?: string;
-  email?: string;
-  role?: Role;
-  isLoggedIn: boolean;
-};
+type ServerSessionData = SessionData & { role?: Role };
 
-export const sessionOptions = {
-  password: process.env.SESSION_SECRET ?? "change-me-to-a-long-random-string",
-  cookieName: "crave_session",
-  cookieOptions: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 1 week
-  },
-};
+export { sessionOptions };
 
 export async function getSession() {
   const cookieStore = await cookies();
-  const session = await getIronSession<SessionData>(
+  const session = await getIronSession<ServerSessionData>(
     cookieStore,
     sessionOptions,
   );
   if (!session.isLoggedIn) {
     session.isLoggedIn = false;
   }
-  return session as IronSession<SessionData> & SessionData;
+  return session as IronSession<ServerSessionData> & ServerSessionData;
 }

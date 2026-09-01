@@ -3,9 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getDictionary, hasLocale } from "../../dictionaries";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function DashboardOrdersPage({
+export const dynamic = "force-dynamic";export default async function DashboardOrdersPage({
   params,
 }: PageProps<"/[lang]/dashboard/orders">) {
   const { lang } = await params;
@@ -85,6 +83,20 @@ export default async function DashboardOrdersPage({
                   </div>
                 )}
               </div>
+
+              {o.paymentScreenshot && (
+                <div className="mt-3">
+                  <span className="text-xs text-ink/50">{d.orderScreenshot}:</span>
+                  <a
+                    href={o.paymentScreenshot}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block text-sm font-medium text-burgundy hover:underline"
+                  >
+                    {d.viewScreenshot} ↗
+                  </a>
+                </div>
+              )}
 
               <div className="mt-4 border-t border-burgundy/5 pt-3">
                 <OrderStatusSelect

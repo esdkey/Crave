@@ -10,7 +10,6 @@ type NavDict = {
   about: string;
   story: string;
   contact: string;
-  dashboard: string;
 };
 
 export function Header({
@@ -31,14 +30,9 @@ export function Header({
   return (
     <header className="sticky top-0 z-40 border-b border-burgundy/10 bg-cream/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        <LanguageSwitcher lang={lang} />
+        <span className="w-16" aria-hidden />
         <Logo lang={lang} />
-        <Link
-          href={`/${lang}/login`}
-          className="text-xs font-medium tracking-wide text-burgundy/70 uppercase transition-colors hover:text-burgundy"
-        >
-          {dict.dashboard}
-        </Link>
+        <LanguageSwitcher lang={lang} />
       </div>
 
       {/* Desktop nav */}
