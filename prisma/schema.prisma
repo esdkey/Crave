@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// SQLite is used for local development (fast start).
+// To switch to PostgreSQL (Railway/Vercel production), change the
+// provider to "postgresql" (and use the Postgres driver adapter
+// together with a Postgres DATABASE_URL).
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  SHIPPING
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  VODAFONE_CASH
+  INSTAPAY
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  nameAr        String
+  nameEn        String
+  descriptionAr String
+  descriptionEn String
+  storyAr       String? // optional fragrance story
+  storyEn       String? // optional fragrance story
+  price         Float
+  imageUrl      String? // path to product image in /public
+  isAvailable   Boolean  @default(true) // shown to customer
+  stock         Int      @default(0) // hidden from customer
+  featured      Boolean  @default(false) // show on home page
+  orders        Order[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     String
+  customerName  String
+  phone         String
+  address       String
+  paymentMethod PaymentMethod @default(COD)
+  status        OrderStatus   @default(PROCESSING)
+  notes         String? // optional note
+  createdAt     DateTime      @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

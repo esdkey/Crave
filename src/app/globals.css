@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* Crave brand palette */
+  --color-cream: #fbf8f4;
+  --color-cream-dark: #f3ede5;
+  --color-burgundy: #720329;
+  --color-burgundy-dark: #53021e;
+  --color-burgundy-light: #8f1a3f;
+  --color-ink: #2a2226;
+  --color-gold: #b98a50;
+
+  /* Typography */
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-cairo), var(--font-inter), sans-serif;
+}
+
+:root {
+  --background: #fbf8f4;
+  --foreground: #2a2226;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Arabic content (RTL) uses the Arabic font stack */
+[dir="rtl"] body,
+[lang="ar"] body {
+  font-family: var(--font-arabic);
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.01em;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4 {
+  letter-spacing: 0;
+}
+
+/* Elegant selection color */
+::selection {
+  background-color: #720329;
+  color: #fbf8f4;
+}
