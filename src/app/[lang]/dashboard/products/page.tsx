@@ -57,6 +57,7 @@ export default async function DashboardProductsPage({
                 <tr>
                   <th className="px-5 py-3">{d.colProduct}</th>
                   <th className="px-5 py-3">{d.colPrice}</th>
+                  <th className="px-5 py-3">{d.colCategory}</th>
                   <th className="px-5 py-3">{d.colStock}</th>
                   <th className="px-5 py-3">{d.colStatus}</th>
                   <th className="px-5 py-3">{d.colOrders}</th>
@@ -106,6 +107,13 @@ export default async function DashboardProductsPage({
                           {p.price} {dict.common.currency}
                         </>
                       )}
+                    </td>
+                    <td className="px-5 py-3">
+                      {p.category === "HIM"
+                        ? d.categoryHim
+                        : p.category === "HER"
+                          ? d.categoryHer
+                          : d.categoryUnisex}
                     </td>
                     <td className="px-5 py-3">{p.stock}</td>
                     <td className="px-5 py-3">

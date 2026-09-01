@@ -44,9 +44,13 @@ export default async function RootLayout({
       className={`${cormorant.variable} ${inter.variable} ${cairo.variable} antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Header dict={dict.nav} lang={lang as Locale} />
+        <Header
+          dict={dict.nav}
+          lang={lang as Locale}
+          marquee={dict.home.marquee}
+        />
         <main className="flex-1">{children}</main>
-        <Footer dict={dict.footer} lang={lang as Locale} />
+        <Footer dict={dict.footer} lang={lang as Locale} nav={dict.nav} />
       </body>
     </html>
   );

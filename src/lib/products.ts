@@ -26,6 +26,17 @@ export const getFeaturedProducts = cache(async () => {
   });
 });
 
+export const getProductsByCategory = cache(
+  async (category: "HIM" | "HER" | "UNISEX") => {
+    return prisma.product.findMany({
+      where: { isAvailable: true, category },
+      orderBy: { createdAt: "asc" },
+      take: 4,
+      include: withImages,
+    });
+  },
+);
+
 export const getProductBySlug = cache(async (slug: string) => {
   return prisma.product.findUnique({
     where: { slug },

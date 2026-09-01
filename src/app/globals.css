@@ -51,3 +51,88 @@ h1, h2, h3, h4 {
   background-color: #720329;
   color: #fbf8f4;
 }
+
+/* ---------- Design helpers (Dribbble-style refresh) ---------- */
+
+@theme {
+  --shadow-soft: 0 10px 30px -12px rgba(42, 34, 38, 0.15);
+  --shadow-card: 0 18px 45px -18px rgba(42, 34, 38, 0.2);
+  --radius-card: 1.5rem;
+}
+
+/* Layered, marshmallow-style soft shadows for product surfaces */
+.shadow-soft {
+  box-shadow: 0 10px 30px -12px rgba(42, 34, 38, 0.15);
+}
+
+.shadow-card {
+  box-shadow: 0 18px 45px -18px rgba(42, 34, 38, 0.2);
+}
+
+.shadow-card-hover {
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.shadow-card-hover:hover {
+  box-shadow: 0 30px 60px -22px rgba(42, 34, 38, 0.28);
+  transform: translateY(-4px);
+}
+
+/* Soft radial glows for colorful/gradient hero backgrounds */
+.hero-bg {
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(143, 26, 63, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(circle at 10% 80%, rgba(185, 138, 80, 0.12), transparent 50%),
+    var(--color-cream);
+}
+
+/* Pills / chips */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+}
+
+/* Fine-grain hover underline for nav links */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-burgundy);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+/* Marquee (announcement ticker) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 22s linear infinite;
+}

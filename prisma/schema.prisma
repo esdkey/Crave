@@ -31,6 +31,12 @@ enum PaymentMethod {
   INSTAPAY
 }
 
+enum Category {
+  HIM
+  HER
+  UNISEX
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -55,6 +61,7 @@ model Product {
   isAvailable   Boolean        @default(true) // shown to customer
   stock         Int            @default(0) // hidden from customer
   featured      Boolean        @default(false) // show on home page
+  category      Category       @default(UNISEX)
   images        ProductImage[]
   orders        Order[]
   createdAt     DateTime       @default(now())

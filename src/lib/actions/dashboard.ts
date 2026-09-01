@@ -43,6 +43,7 @@ const productSchema = z.object({
     v != null && v > 0 ? v : undefined,
   ),
   stock: z.coerce.number().int().min(0).default(0),
+  category: z.enum(["HIM", "HER", "UNISEX"]).default("UNISEX"),
   isAvailable: z
     .string()
     .optional()
@@ -152,6 +153,7 @@ export async function createProduct(
         stock: data.stock,
         isAvailable: data.isAvailable,
         featured: data.featured,
+        category: data.category,
       },
     });
 
@@ -208,6 +210,7 @@ export async function updateProduct(
         stock: data.stock,
         isAvailable: data.isAvailable,
         featured: data.featured,
+        category: data.category,
       },
     });
 

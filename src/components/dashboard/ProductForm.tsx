@@ -14,6 +14,10 @@ type ProductFormDict = {
   formStock: string;
   formAvailable: string;
   formFeatured: string;
+  formCategory: string;
+  categoryHim: string;
+  categoryHer: string;
+  categoryUnisex: string;
   formImages: string;
   formStay: string;
   formCover: string;
@@ -59,6 +63,7 @@ export function ProductForm({
     stock: number;
     isAvailable: boolean;
     featured: boolean;
+    category: "HIM" | "HER" | "UNISEX";
     descriptionAr: string;
     descriptionEn: string;
     storyAr: string | null;
@@ -154,12 +159,24 @@ export function ProductForm({
 
       {/* Stock + availability/featured */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <FieldInput
-          label={dict.formStock}
-          name="stock"
-          type="number"
-          defaultValue={product?.stock ?? 0}
-        />
+        <div className="grid gap-4">
+          <FieldInput
+            label={dict.formStock}
+            name="stock"
+            type="number"
+            defaultValue={product?.stock ?? 0}
+          />
+          <FieldSelect
+            label={dict.formCategory}
+            name="category"
+            defaultValue={product?.category ?? "UNISEX"}
+            options={[
+              { value: "HIM", label: dict.categoryHim },
+              { value: "HER", label: dict.categoryHer },
+              { value: "UNISEX", label: dict.categoryUnisex },
+            ]}
+          />
+        </div>
         <div className="flex flex-wrap items-end gap-6">
           <CheckField
             label={dict.formAvailable}
@@ -361,6 +378,38 @@ function FieldArea({
         rows={3}
         className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 placeholder:text-slate-400 focus:border-burgundy focus:outline-none focus:ring-2 focus:ring-burgundy/20"
       />
+    </div>
+  );
+}
+
+function FieldSelect({
+  label,
+  name,
+  defaultValue,
+  options,
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-1.5 block text-sm font-semibold text-slate-700">
+        {label}
+      </label>
+      <select
+        id={name}
+        name={name}
+        defaultValue={defaultValue}
+        className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 focus:border-burgundy focus:outline-none focus:ring-2 focus:ring-burgundy/20"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

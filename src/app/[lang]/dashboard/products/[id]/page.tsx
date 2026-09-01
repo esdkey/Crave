@@ -58,6 +58,7 @@ export default async function EditProductPage({
           stock: product.stock,
           isAvailable: product.isAvailable,
           featured: product.featured,
+          category: product.category,
           descriptionAr: product.descriptionAr,
           descriptionEn: product.descriptionEn,
           storyAr: product.storyAr,
