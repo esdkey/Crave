@@ -1,6 +1,7 @@
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileNav } from "./MobileNav";
+import { HeaderActions } from "./HeaderActions";
 import type { Locale } from "@/app/[lang]/dictionaries";
 import Link from "next/link";
 
@@ -12,86 +13,104 @@ type NavDict = {
   contact: string;
 };
 
+type Categories = {
+  him: string;
+  her: string;
+  unisex: string;
+  himSubtitle: string;
+  herSubtitle: string;
+  unisexSubtitle: string;
+};
+
+type Announcement = {
+  text: string;
+  href: string;
+};
+
 export function Header({
-  dict,
+  nav,
+  categories,
   lang,
-  marquee,
+  announcement,
 }: {
-  dict: NavDict;
+  nav: NavDict;
+  categories: Categories;
   lang: Locale;
-  marquee?: string[];
+  announcement?: Announcement;
 }) {
-  const links = [
-    { href: `/${lang}`, label: dict.home },
-    { href: `/${lang}/products`, label: dict.products },
-    { href: `/${lang}/about`, label: dict.about },
-    { href: `/${lang}/story`, label: dict.story },
-    { href: `/${lang}/contact`, label: dict.contact },
+  const shopLinks = [
+    { href: `/${lang}/products?cat=HIM`, label: categories.him },
+    { href: `/${lang}/products?cat=HER`, label: categories.her },
+    { href: `/${lang}/products?cat=UNISEX`, label: categories.unisex },
   ];
 
   return (
     <header className="sticky top-0 z-40">
-      {/* Announcement marquee */}
-      {marquee && marquee.length > 0 && (
-        <div className="overflow-hidden bg-burgundy text-cream">
-          <div className="marquee-track">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="flex items-center" aria-hidden={dup === 1}>
-                {marquee.map((item) => (
-                  <span
-                    key={dup + item}
-                    className="inline-flex items-center gap-6 px-4 py-2 text-xs font-medium uppercase tracking-wide"
-                  >
-                    {item}
-                    <span className="text-gold" aria-hidden>✦</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Announcement bar — static, dark, clickable */}
+      {announcement && (
+        <Link
+          href={`/${lang}${announcement.href}`}
+          className="block bg-burgundy-dark text-center text-xs font-medium uppercase tracking-wide text-cream transition-colors hover:bg-burgundy"
+        >
+          <span className="mx-auto inline-block max-w-full truncate px-4 py-2">
+            <span className="mr-1 inline-block text-gold" aria-hidden>✦</span>
+            {announcement.text}
+          </span>
+        </Link>
       )}
 
-      {/* Main bar */}
+      {/* Main bar — 3 zones: nav | logo | icons */}
       <div className="border-b border-burgundy/10 bg-cream/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-6">
-          <div className="flex flex-1 items-center gap-3 md:hidden">
-            <span className="w-6" aria-hidden />
-          </div>
+        <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-3 px-4 py-3 md:px-6">
+          {/* Left zone — nav links */}
+          <nav className="flex items-center justify-start gap-6 text-sm font-medium text-ink">
+            <Link href={`/${lang}`} className="nav-link transition-colors hover:text-burgundy hidden sm:inline">
+              {nav.home}
+            </Link>
 
-          <Logo lang={lang} />
+            {/* Shop dropdown */}
+            <div className="group relative hidden sm:block">
+              <Link href={`/${lang}/products`} className="nav-link transition-colors hover:text-burgundy">
+                {nav.products}
+              </Link>
+              <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div className="min-w-44 rounded-2xl border border-burgundy/10 bg-cream p-2 shadow-card">
+                  {shopLinks.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      className="block rounded-xl px-3 py-2 text-sm text-ink transition-colors hover:bg-burgundy/10 hover:text-burgundy"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-          {/* Desktop nav */}
-          <nav className="hidden flex-1 md:block">
-            <ul className="flex items-center justify-center gap-8 text-sm font-medium text-ink">
-              {links.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="nav-link transition-colors hover:text-burgundy">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <Link href={`/${lang}/about`} className="nav-link transition-colors hover:text-burgundy hidden lg:inline">
+              {nav.about}
+            </Link>
+            <Link href={`/${lang}/contact`} className="nav-link transition-colors hover:text-burgundy hidden xl:inline">
+              {nav.contact}
+            </Link>
           </nav>
 
-          <div className="flex flex-1 items-center justify-end gap-2">
-            <Link
-              href={`/${lang}/products`}
-              aria-label="Search"
-              className="hidden h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-burgundy/10 hover:text-burgundy sm:inline-flex"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <circle cx="11" cy="11" r="7" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-            </Link>
+          {/* Center zone — logo */}
+          <div className="flex justify-center">
+            <Logo lang={lang} />
+          </div>
+
+          {/* Right zone — icons */}
+          <div className="flex items-center justify-end gap-2">
+            <HeaderActions lang={lang} />
             <LanguageSwitcher lang={lang} />
           </div>
         </div>
       </div>
 
       {/* Mobile nav */}
-      <MobileNav lang={lang} dict={dict} />
+      <MobileNav lang={lang} dict={nav} />
     </header>
   );
 }

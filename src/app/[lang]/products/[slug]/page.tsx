@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ProductGallery } from "@/components/site/ProductGallery";
 import { OrderForm } from "@/components/site/OrderForm";
+import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { getPaymentConfig } from "@/lib/payment";
 import { getDictionary, hasLocale, type Locale } from "../../dictionaries";
 import {
@@ -91,18 +92,31 @@ export default async function ProductDetailPage({
 
             {/* Order form */}
             {product.isAvailable && (
-              <div className="mt-8 rounded-lg border border-burgundy/15 bg-white p-6 shadow-sm">
-                <h2 className="mb-4 font-serif text-2xl text-ink">
-                  {dict.product.orderTitle}
-                </h2>
-                <OrderForm
+              <div className="mt-8 space-y-3">
+                <AddToCartButton
+                  product={{
+                    id: product.id,
+                    slug: product.slug,
+                    name: productLocalized.name,
+                    price: productLocalized.price,
+                    salePrice: productLocalized.salePrice,
+                    image: productLocalized.primaryImage,
+                  }}
+                  label={dict.product.addToCart}
+                />
+                <div className="rounded-lg border border-burgundy/15 bg-white p-6 shadow-sm">
+                  <h2 className="mb-4 font-serif text-2xl text-ink">
+                    {dict.product.orderTitle}
+                  </h2>
+                  <OrderForm
                   productId={product.id}
                   dict={dict.orderForm}
                   payment={{
                     vodafone: payment.vodafoneNumber || null,
                     instapay: payment.instapayNumber || null,
                   }}
-                />
+                  />
+                </div>
               </div>
             )}
           </div>

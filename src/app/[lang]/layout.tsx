@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, type Locale } from "./dictionaries";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { CartProvider } from "@/components/site/cart-context";
+import { CartHost } from "@/components/site/CartHost";
+import { getProducts, localizedProduct } from "@/lib/products";
+import type { SearchableProduct } from "@/components/site/SearchOverlay";
 import "@/app/globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -37,6 +41,16 @@ export default async function RootLayout({
 
   const dict = await getDictionary();
 
+  const rawProducts = await getProducts();
+  const localized = rawProducts.map((p) => localizedProduct(p, lang as Locale));
+  const searchProducts: SearchableProduct[] = localized.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    price: p.price,
+    salePrice: p.salePrice,
+    image: p.primaryImage,
+  }));
+
   return (
     <html
       lang={lang}
@@ -44,13 +58,22 @@ export default async function RootLayout({
       className={`${cormorant.variable} ${inter.variable} ${cairo.variable} antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Header
-          dict={dict.nav}
-          lang={lang as Locale}
-          marquee={dict.home.marquee}
-        />
-        <main className="flex-1">{children}</main>
-        <Footer dict={dict.footer} lang={lang as Locale} nav={dict.nav} />
+        <CartProvider>
+          <Header
+            nav={dict.nav}
+            categories={dict.categories}
+            lang={lang as Locale}
+            announcement={dict.home.announcement}
+          />
+          <CartHost
+            lang={lang as Locale}
+            cartDict={dict.cart}
+            searchDict={dict.search}
+            products={searchProducts}
+          />
+          <main className="flex-1">{children}</main>
+          <Footer dict={dict.footer} lang={lang as Locale} nav={dict.nav} />
+        </CartProvider>
       </body>
     </html>
   );

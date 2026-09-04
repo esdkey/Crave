@@ -67,6 +67,10 @@
     "feature3Title": "Secure payment",
     "feature3Text": "Pay by cash on delivery, Vodafone Cash or InstaPay.",
     "marquee": ["Free Shipping", "Secure Payment", "24/7 Support", "Easy Returns"],
+    "announcement": {
+      "text": "FREE SHIPPING on orders above 2,000 EGP in Cairo & Alexandria",
+      "href": "/contact"
+    },
     "shopByTitle": "Shop by collection",
     "heroOverlay1": "Discover Your",
     "heroOverlay2": "Signature",
@@ -107,7 +111,8 @@
     "orderTitle": "Order this perfume",
     "shippingNote": "Shipping fees will be confirmed with you before the order ships.",
     "notFound": "Sorry, this fragrance was not found.",
-    "otherProducts": "Other fragrances you may like"
+    "otherProducts": "Other fragrances you may like",
+    "addToCart": "Add to cart"
   },
   "orderForm": {
     "name": "Full name",
@@ -276,5 +281,23 @@
     "paymentVodafoneLabel": "Vodafone Cash number",
     "paymentInstapayLabel": "InstaPay number/account",
     "saveSettings": "Save settings"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyMessage": "Have an account? Log in to check out faster",
+    "continueShopping": "Continue shopping",
+    "total": "Total",
+    "items": "items",
+    "item": "item",
+    "remove": "Remove",
+    "orderNow": "Order now",
+    "subtotal": "Subtotal"
+  },
+  "search": {
+    "placeholder": "Search perfumes...",
+    "noResults": "No perfumes found",
+    "results": "Results",
+    "viewAll": "View all products"
   }
 }

@@ -45,7 +45,11 @@ dev.db*
 *.log
 
 # user-uploaded content (product images / payment screenshots)
-/public/uploads/
+# Ignore uploads except product images, which are shipped with the repo so
+# they render on Railway's ephemeral filesystem.
+/public/uploads/*
+!/public/uploads/products/
+!/public/uploads/products/*
 
 # typescript
 *.tsbuildinfo

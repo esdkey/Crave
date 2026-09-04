@@ -67,6 +67,10 @@
     "feature3Title": "دفع آمن",
     "feature3Text": "ادفع عند الاستلام أو عبر فودافون كاش أو انستاباي.",
     "marquee": ["شحن مجاني", "دفع آمن", "دعم 24/7", "إرجاع سهل"],
+    "announcement": {
+      "text": "شحن مجاني للطلبات فوق 2000 ج.م في القاهرة والإسكندرية",
+      "href": "/contact"
+    },
     "shopByTitle": "تسوق حسب المجموعة",
     "heroOverlay1": "اكتشف",
     "heroOverlay2": "توقيعك",
@@ -107,7 +111,8 @@
     "orderTitle": "اطلب العطر",
     "shippingNote": "سيتم تأكيد مصاريف الشحن معك قبل شحن الطلب.",
     "notFound": "عذرًا، لم يتم العثور على هذا العطر.",
-    "otherProducts": "عطور أخرى قد تعجبك"
+    "otherProducts": "عطور أخرى قد تعجبك",
+    "addToCart": "أضف إلى السلة"
   },
   "orderForm": {
     "name": "الاسم بالكامل",
@@ -276,5 +281,23 @@
     "paymentVodafoneLabel": "رقم فودافون كاش",
     "paymentInstapayLabel": "رقم/حساب انستاباي",
     "saveSettings": "حفظ الإعدادات"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة",
+    "emptyMessage": "عندك حساب؟ سجّل الدخول لإتمام الطلب بشكل أسرع",
+    "continueShopping": "متابعة التسوق",
+    "total": "الإجمالي",
+    "items": "منتجات",
+    "item": "منتج",
+    "remove": "حذف",
+    "orderNow": "اطلب الآن",
+    "subtotal": "المجموع"
+  },
+  "search": {
+    "placeholder": "ابحث عن العطور...",
+    "noResults": "لا توجد عطور مطابقة",
+    "results": "النتائج",
+    "viewAll": "عرض كل المنتجات"
   }
 }
