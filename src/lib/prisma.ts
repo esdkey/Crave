@@ -1,19 +1,17 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 function createPrismaClient() {
-  // Prisma 7 requires a driver adapter. Production uses PostgreSQL (e.g.
-  // Railway); local dev falls back to SQLite when no Postgres URL is set.
+  // Prisma 7 requires a driver adapter. The Prisma schema is PostgreSQL
+  // (Neon/Railway), so a PostgreSQL connection string is required.
   const url = process.env.DATABASE_URL;
-  const isPostgres = !!url && url.startsWith("postgres");
-  if (isPostgres) {
-    const adapter = new PrismaPg({ connectionString: url });
-    return new PrismaClient({ adapter });
+  if (!url || !url.startsWith("postgres")) {
+    throw new Error(
+      "DATABASE_URL must be set to a PostgreSQL connection string (e.g. from Neon). " +
+        "On Railway add DATABASE_URL to the service variables. For local dev, keep it in .env.",
+    );
   }
-  const adapter = new PrismaBetterSqlite3({
-    url: url ?? "file:./dev.db",
-  });
+  const adapter = new PrismaPg({ connectionString: url });
   return new PrismaClient({ adapter });
 }
 
