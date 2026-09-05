@@ -3,12 +3,18 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
-// ---- LOCAL DEV SCHEMA (SQLite) ----
-// This is the default schema used when running `next dev` locally.
-// Before deploying to Railway/Postgres, switch to `schema.production.prisma`
-// (see DEPLOYMENT.md) and run `prisma generate` + `prisma migrate deploy`.
+// ---- PRODUCTION SCHEMA (PostgreSQL) ----
+// Use this schema when deploying to Railway/Postgres.
+//
+// To switch:
+//   1. Copy this file over prisma/schema.prisma
+//      (e.g. `Copy-Item prisma/schema.production.prisma prisma/schema.prisma`)
+//   2. Set DATABASE_URL to a Postgres URL in Railway/environment
+//   3. Run:  npx prisma generate
+//   4. Run:  npx prisma migrate deploy   (applies /prisma/migrations)
+//   5. Run:  npx prisma db seed          (creates the ADMIN user)
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 enum Role {
